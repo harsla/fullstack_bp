@@ -1,0 +1,21 @@
+{
+  "name": "fullstack_bp",
+  "version": "0.0.1",
+  "description": "A fullstack MEAN boilerplate using Express 4, MongoDB, AngularJS, and JWT Auth",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:harsla/fullstack_bp.git"
+  },
+  "author": "Scott Harsla <harsla@gmail.com>",
+  "homepage": "https://github.com/harsla/fullstack_bp",
+  "dependencies": {
+    "jwt-simple": "^0.2.0",
+    "moment": "^2.8.3",
+    "mongoose": "^3.8.17",
+    "bcrypt": "^0.8.0",
+    "url": "^0.10.1",
+    "body-parser": "^1.9.0",
+    "cors": "^2.4.2",
+    "express-validator": "^2.6.0"
+  }
+}
