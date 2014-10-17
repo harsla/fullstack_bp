@@ -1,13 +1,14 @@
 var url = require('url'),
     UserModel = require('../models/user'),
-    jwt = require('jwt-simple');
+    jwt = require('jwt-simple'),
+    secrets = require('../config/secrets');
 
 module.exports = function(req, res, next) {
   var parsed_url = url.parse(req.url, true),
     token = (req.body && req.body.access_token) || parsed_url.query.access_token || req.headers["x-access-token"];
   if (token) {
     try {
-      var decoded = jwt.decode(token, app.get('jwtTokenSecret'));
+      var decoded = jwt.decode(token, secrets.jwt);
       if (decoded.exp <= Date.now()) {
         res.end('Access token has expired', 400);
       }

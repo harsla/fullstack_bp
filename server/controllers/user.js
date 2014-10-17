@@ -2,7 +2,7 @@ var User = require('../models/user'),
     jwtauth = require('../lib/jwtauth'),
     jwt = require('jwt-simple'),
     moment = require('moment'),
-    secrets = require('../config/mmmhmm');
+    secrets = require('../config/secrets');
 
 // Log in to an account
 // POST /login: :email :password
@@ -79,4 +79,10 @@ var user = new User({
       return res.status(409).send('email already exsists').end();
     res.status(200).send('user ' + req.body.name + ' created').end();
   });
+};
+
+
+// GET /account :token(h)
+exports.getAccount = function(req, res) {
+  res.status(200).send('Welcome, ' + req.user.name).end();
 };
