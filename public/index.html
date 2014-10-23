@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html ng-app="bpApp">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <title>Fullstack Boilerplate</title>
+  <link href="favicon.png" rel="icon" type="image/png">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/bootstrap.min.css" />
+  <link href="stylesheets/animate.css" rel="stylesheet">
+  <link href="stylesheets/style.css" rel="stylesheet">
+</head>
+<body>
+<div ng-controller="NavbarCtrl" class="navbar navbar-default navbar-static-top" role="navigation" bs-navbar>
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">
+      <span>Fullstack<strong>BP</strong></span>
+    </a>
+  </div>
+  <ul class="nav navbar-nav">
+    <li data-match-route="/$"><a href="/">Home</a></li>
+    <li data-match-route="/Secure" ng-if="currentUser"><a href="/secure">Secure</a></li>
+    <li data-match-route="/Manage" ng-if="currentUser"><a href="/manage">Manage</a></li>
+  </ul>
+  <ul class="nav navbar-nav pull-right" ng-if="!currentUser">
+    <li data-match-route="/login"><a href="/login">Login</a></li>
+    <li data-match-route="/signup"><a href="/signup">Sign up</a></li>
+  </ul>
+  <ul class="nav navbar-nav pull-right" ng-if="currentUser">
+    <li class="navbar-text" ng-bind="currentUser.email"></li>
+    <li><a href="javascript:void(0)" ng-click="logout()">Logout</a></li>
+  </ul>
+</div>
+
+<div ng-view class="{{pageClass}}"></div>
+
+<!-- Google Hosted Libraries CDN -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-animate.min.js"></script>
+
+<script src="lib/angular-messages.js"></script>
+<script src="lib/angular-resource.js"></script>
+<script src="lib/moment.min.js"></script>
+<script src="lib/angular-strap.js"></script>
+<script src="lib/angular-strap.tpl.js"></script>
+
+<script src="app.js"></script>
+<script src="filters/fromNow.js"></script>
+<script src="directives/uniqueEmail.js"></script>
+<script src="directives/passwordStrength.js"></script>
+<script src="controllers/main.js"></script>
+<script src="controllers/secure.js"></script>
+<script src="controllers/navbar.js"></script>
+<script src="controllers/login.js"></script>
+<script src="controllers/signup.js"></script>
+<script src="controllers/manage.js"></script>
+<script src="services/auth.js"></script>
+
+<!--<script src="app.min.js"></script>-->
+<!--<script src="templates.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,39 @@
+<div class="container" ng-if="currentUser">
+
+  <!-- Manage Users Titlebar -->
+  <div class="navbar navbar-default">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="javascript:void(0)">Manage Users</a>
+    </div>
+    <div class="navbar-collapse collapse navbar-inverse-collapse">
+      <form class="navbar-form navbar-right">
+        <input type="text" class="form-control col-lg-12" placeholder="Search" ng-model="searchText">
+      </form>
+    </div>
+  </div>
+
+  <!-- ng-repeat user panel -->
+  <div class="col-lg-4 animated bounceInUp" ng-repeat="user in userData | filter:searchText">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{user.email}}</h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-lg-4">
+          <img src="images/photo.jpg" />
+        </div>
+        <ul class="list-unstyled col-lg-6 ">
+          <li><strong>ID: </strong>{{user._id}}</li>
+          <li><strong>Name: </strong>{{user.name}}</li>
+          <li><strong>Email: </strong>{{user.email}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
