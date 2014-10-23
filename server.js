@@ -33,7 +33,7 @@ app.get('/api/users', userController.checkEmailAvailable);
 app.get('/account', jwauth, userController.getAccount);
 app.get('/manage', jwauth, userController.getUsers);
 
-//handle pretty urls
+// handle pretty urls
 app.get('*', function(req, res) {
   res.redirect('/#' + req.originalUrl);
 });
