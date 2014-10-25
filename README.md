@@ -7,7 +7,7 @@ A fullstack boilerplate using Express 4, MongoDB, AngularJS, and JWT Auth
 TODO:
 * User management
   - List view
-  ~~- Create User~~
+  - ~~Create User~~
   - Remove User
   - Edit User (reset password, change name, etc..)
 * User Groups
