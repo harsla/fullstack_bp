@@ -23,6 +23,10 @@ angular.module('bpApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mg
         templateUrl: 'views/manage.html',
         controller: 'ManageCtrl'
       })
+      .when('/add_user', {
+        templateUrl: 'views/add_user.html',
+        controller: 'AddUserCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

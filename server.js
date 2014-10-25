@@ -27,20 +27,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
-app.post('/login', userController.postLogin);
-app.post('/signup', userController.postSignup);
+app.post('/api/login', userController.postLogin);
+app.post('/api/signup', userController.postSignup);
 app.get('/api/users', userController.checkEmailAvailable);
-app.get('/account', jwauth, userController.getAccount);
-app.get('/manage', jwauth, userController.getUsers);
+app.get('/api/account', jwauth, userController.getAccount);
+app.get('/api/manage', jwauth, userController.getUsers);
 
 // handle pretty urls
 app.get('*', function(req, res) {
+  console.log('boop');
   res.redirect('/#' + req.originalUrl);
 });
 
 // error handling
 app.use(function(err, req, res, next) {
-  console.error(err.stack);
   res.send(500, { message: err.message });
 });
 
