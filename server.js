@@ -29,13 +29,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.post('/api/login', userController.postLogin);
 app.post('/api/signup', userController.postSignup);
+app.post('/api/add_user', jwauth, userController.addUser);
+app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/account', jwauth, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);
 
 // handle pretty urls
 app.get('*', function(req, res) {
-  console.log('boop');
   res.redirect('/#' + req.originalUrl);
 });
 

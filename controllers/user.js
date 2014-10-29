@@ -83,6 +83,49 @@ var user = new User({
   });
 };
 
+// Create a new account (can set permissions)
+// POST /add_user :name :email :password
+exports.addUser = function(req, res, next) {
+  req.assert('name', 'Name can not be empty').notEmpty();
+  req.assert('email', 'Email is not valid').isEmail();
+  req.assert('password', 'Password must be at least 4 characters long').len(4);
+
+  var errors = req.validationErrors();
+
+  if (errors) {
+   return res.status(409).send(errors);
+  }
+
+var user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  });
+
+  user.save(function(err){
+    if (err)
+      return res.status(409).send('email already exsists').end();
+    res.status(200).send('user ' + req.body.name + ' created').end();
+  });
+};
+
+// Create a new account (can set permissions)
+// POST /delete_user :user_object
+exports.deleteUser = function(req, res, next) {
+  req.assert('_id', 'User ID must be valid').len(24);
+
+  var errors = req.validationErrors();
+
+  if (errors) {
+   return res.status(409).send(errors).end();
+  }
+
+  User.remove({ _id: req.body._id }, function(err) {
+  if (err) return next(err);
+    res.status(200).send('user ' + req.body.name + ' deleted').end();
+  });
+};
+
 
 // GET /account :token(h)
 exports.getAccount = function(req, res) {

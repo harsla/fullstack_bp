@@ -56,7 +56,7 @@ angular.module('bpApp')
           });
       },
       addUser: function(user) {
-        return $http.post('/api/signup', user)
+        return $http.post('/api/add_user', user)
           .success(function() {
             $location.path('/manage');
             $alert({

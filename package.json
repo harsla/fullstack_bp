@@ -1,6 +1,6 @@
 {
   "name": "fullstack_bp",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A fullstack MEAN boilerplate using Express 4, MongoDB, AngularJS, and JWT Auth",
   "repository": {
     "type": "git",
