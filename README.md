@@ -29,7 +29,7 @@ BLING:
   * Account security (repeat lockout, ip record, etc)
 
 THOUGHTS:
-* To disable a user account, we should move the document to a 'disabled' collection.
+* To disable a user account, we should add a disabled flag and check it on every request (and the group)
 * Accounts accessing PII should have a verified IP address. To verify an IP the user should enter a time sensitive token
 delivered via email.
 * All Administrators and superusers must provide a google authenticator key to elevate into the role.  

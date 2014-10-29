@@ -6,10 +6,17 @@ angular.module('bpApp')
     });
 
     $scope.deleteUser = function (user) {
-      console.log(user);
       Manage.delete(user).success(function(){
         var userIndex = $scope.userData.indexOf(user);
         $scope.userData.splice(userIndex._id, 1);
       });
     };
+
+    $scope.editUser = function (user) {
+      Manage.edit(user).success(function(){
+        var userIndex = $scope.userData.indexOf(user);
+        //$scope.userData.splice(userIndex._id, 1);
+      });
+    };
+
   });

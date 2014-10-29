@@ -17,7 +17,9 @@ exports.postLogin = function(req, res, next) {
   }
 
   //auth here
-  User.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({
+    email: req.body.email
+  }, function(err, user) {
 
     // user not found
     if (err) {
@@ -35,20 +37,20 @@ exports.postLogin = function(req, res, next) {
       }
       if (match) {
         // User has authenticated OK
-          var expires = moment().add(7, 'days').valueOf();
-          var token = jwt.encode({
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email
-            },
-            exp: expires
-          }, secrets.jwt);
+        var expires = moment().add(7, 'days').valueOf();
+        var token = jwt.encode({
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email
+          },
+          exp: expires
+        }, secrets.jwt);
 
-          res.json({
-            token : token,
-            exp: expires
-          });
+        res.json({
+          token: token,
+          exp: expires
+        });
       } else {
         //bad password
         return res.status(401).send('Bad username or password (bad password)');
@@ -67,16 +69,16 @@ exports.postSignup = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-   return res.status(409).send(errors);
+    return res.status(409).send(errors);
   }
 
-var user = new User({
+  var user = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password
   });
 
-  user.save(function(err){
+  user.save(function(err) {
     if (err)
       return res.status(409).send('email already exsists').end();
     res.status(200).send('user ' + req.body.name + ' created').end();
@@ -93,16 +95,16 @@ exports.addUser = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-   return res.status(409).send(errors);
+    return res.status(409).send(errors);
   }
 
-var user = new User({
+  var user = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password
   });
 
-  user.save(function(err){
+  user.save(function(err) {
     if (err)
       return res.status(409).send('email already exsists').end();
     res.status(200).send('user ' + req.body.name + ' created').end();
@@ -117,13 +119,33 @@ exports.deleteUser = function(req, res, next) {
   var errors = req.validationErrors();
 
   if (errors) {
-   return res.status(409).send(errors).end();
+    return res.status(409).send(errors).end();
   }
 
-  User.remove({ _id: req.body._id }, function(err) {
-  if (err) return next(err);
+  User.remove({
+    _id: req.body._id
+  }, function(err) {
+    if (err) return next(err);
     res.status(200).send('user ' + req.body.name + ' deleted').end();
   });
+};
+
+// Edit an exsiting account
+// POST /edit_user :user_object
+exports.editUser = function(req, res, next) {
+  req.assert('_id', 'User ID must be valid').len(24);
+
+  var errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(409).send(errors).end();
+  }
+
+  User.findById(req.body._id, function(err, user) {
+    if (err) return next(err);
+    res.status(200).send(user).end();
+  });
+
 };
 
 
@@ -134,12 +156,18 @@ exports.getAccount = function(req, res) {
 
 exports.checkEmailAvailable = function(req, res, next) {
   if (!req.query.email) {
-    return res.send(400, { message: 'Email parameter is required.' });
+    return res.send(400, {
+      message: 'Email parameter is required.'
+    });
   }
 
-  User.findOne({ email: req.query.email }, function(err, user) {
+  User.findOne({
+    email: req.query.email
+  }, function(err, user) {
     if (err) return next(err);
-    res.send({ available: !user });
+    res.send({
+      available: !user
+    });
   });
 };
 
