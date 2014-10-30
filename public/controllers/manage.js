@@ -1,5 +1,5 @@
 angular.module('bpApp')
-  .controller('ManageCtrl', function($scope, $http, Manage) {
+  .controller('ManageCtrl', function($scope, $http, $routeParams, Manage) {
 
     $http.get('/api/manage').success(function(data) {
       $scope.userData = data;
@@ -12,10 +12,10 @@ angular.module('bpApp')
       });
     };
 
-    $scope.editUser = function (user) {
-      Manage.edit(user).success(function(){
-        var userIndex = $scope.userData.indexOf(user);
-        //$scope.userData.splice(userIndex._id, 1);
+    $scope.editUser = function () {
+      console.log($routeParams.user_id);
+      Manage.get_edit($routeParams).success(function(data){
+        //
       });
     };
 

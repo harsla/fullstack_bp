@@ -132,7 +132,7 @@ exports.deleteUser = function(req, res, next) {
 
 // Edit an exsiting account
 // POST /edit_user :user_object
-exports.editUser = function(req, res, next) {
+exports.postEditUser = function(req, res, next) {
   req.assert('_id', 'User ID must be valid').len(24);
 
   var errors = req.validationErrors();
@@ -176,4 +176,21 @@ exports.getUsers = function(req, res, next) {
     if (err) return next(err);
     res.send(users);
   });
+};
+
+// Edit an exsiting account
+// POST /edit_user :user_object
+exports.getEditUser = function(req, res, next) {
+
+  var errors = req.validationErrors();
+
+  if (errors) {
+    return res.status(409).send(errors).end();
+  }
+
+  User.findById(req.query.user_id, function(err, user) {
+    if (err) return next(err);
+    res.status(200).send(user).end();
+  });
+
 };
