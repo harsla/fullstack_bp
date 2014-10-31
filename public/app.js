@@ -29,7 +29,7 @@ angular.module('bpApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mg
       })
       .when('/edit_user/:user_id', {
         templateUrl: 'views/edit_user.html',
-        controller: 'ManageCtrl'
+        controller: 'EditCtrl'
       })
       .otherwise({
         redirectTo: '/'

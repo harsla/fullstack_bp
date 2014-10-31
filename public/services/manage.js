@@ -12,15 +12,15 @@ angular.module('bpApp')
               duration: 3
             });
           })
-        .error(function(error) {
-          $alert({
-            title: 'Error!',
-            content: error.data,
-            animation: 'fadeZoomFadeDown',
-            type: 'material',
-            duration: 3
+          .error(function(error) {
+            $alert({
+              title: 'Error!',
+              content: error.data,
+              animation: 'fadeZoomFadeDown',
+              type: 'material',
+              duration: 3
+            });
           });
-        });
       },
       post_edit: function(user) {
         return $http.post('/api/edit_user', user)
@@ -33,38 +33,34 @@ angular.module('bpApp')
               duration: 3
             });
           })
-        .error(function(error) {
-          $alert({
-            title: 'Error!',
-            content: error.data,
-            animation: 'fadeZoomFadeDown',
-            type: 'material',
-            duration: 3
-          });
-        });
-      },
-      get_edit: function(user) {
-        return $http.get('/api/edit_user', {params: {
-          user_id: user.user_id
-        }})
-          .success(function(data) {
-            $location.path('/manage');
+          .error(function(error) {
             $alert({
-              title: "USER HAS BEEN UPDATED!",
+              title: 'Error!',
+              content: error.data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3
             });
-          })
-        .error(function(error) {
-          $alert({
-            title: 'Error!',
-            content: error.data,
-            animation: 'fadeZoomFadeDown',
-            type: 'material',
-            duration: 3
           });
-        });
+      },
+      get_edit: function(user) {
+        return $http.get('/api/edit_user', {
+            params: {
+              user_id: user.user_id
+            }
+          })
+          .success(function(data) {
+            return(data);
+          })
+          .error(function(error) {
+            $alert({
+              title: 'Error!',
+              content: 'unable to fetch user data',
+              animation: 'fadeZoomFadeDown',
+              type: 'material',
+              duration: 3
+            });
+          });
       }
     };
   });

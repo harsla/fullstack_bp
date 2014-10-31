@@ -2,7 +2,7 @@
   <div class="row">
     <div class="center-form panel">
       <div class="panel-body">
-        <form method="post" ng-submit="editUser()" name="signupForm">
+        <form method="post" ng-submit="edit()" name="signupForm">
           <h2 class="text-center">Edit User</h2>
 
           <div class="form-group has-feedback" ng-class="{ 'has-error' : signupForm.fullName.$invalid && signupForm.fullName.$dirty }">
@@ -24,10 +24,9 @@
           </div>
 
           <div class="form-group has-feedback" ng-class="{ 'has-error' : signupForm.password.$invalid && signupForm.password.$dirty }">
-            <input password-strength class="form-control input-lg" type="password" name="password" ng-model="password" placeholder="Password" required>
+            <input password-strength class="form-control input-lg" type="password" name="password" ng-model="password" placeholder="Password">
             <span class="ion-key form-control-feedback"></span>
             <div class="help-block text-danger" ng-if="signupForm.password.$dirty" ng-messages="signupForm.password.$error">
-              <div ng-message="required">Password is required.</div>
             </div>
           </div>
 

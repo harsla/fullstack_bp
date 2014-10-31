@@ -12,11 +12,4 @@ angular.module('bpApp')
       });
     };
 
-    $scope.editUser = function () {
-      console.log($routeParams.user_id);
-      Manage.get_edit($routeParams).success(function(data){
-        //
-      });
-    };
-
   });

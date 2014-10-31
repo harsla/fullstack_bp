@@ -6,6 +6,8 @@ angular.module('bpApp')
 
        element.css({
          'background-image': 'url(' + data[pick].url + ')',
+         'background-size': 'cover',
+         'background-repeat': 'no-repeat'
        });
 
        });

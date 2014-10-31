@@ -8,7 +8,7 @@ TODO:
 * User management
   - ~~Create User~~
   - ~~Remove User~~
-  - Edit User (reset password, change name, etc..)
+  - ~~Edit User (reset password, change name, etc..)~~
   - Lock account
 * User Groups
 * Login

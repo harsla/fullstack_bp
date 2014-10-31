@@ -140,11 +140,24 @@ exports.postEditUser = function(req, res, next) {
   if (errors) {
     return res.status(409).send(errors).end();
   }
+  var conditions = { _id: req.body._id };
 
-  User.findById(req.body._id, function(err, user) {
-    if (err) return next(err);
-    res.status(200).send(user).end();
-  });
+  var update = {
+      name: req.body.name,
+      email: req.body.email,
+  };
+  if (req.query.password) {
+  update.password =  req.body.password;
+  }
+
+  User.update(conditions, update, callback);
+
+  function callback (err, numAffected) {
+    if (err){
+      return res.status(409).send(err).end();
+    }
+      res.status(200).send("OK").end();
+  }
 
 };
 
