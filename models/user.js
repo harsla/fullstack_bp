@@ -4,7 +4,8 @@ var mongoose = require('mongoose'),
 var userSchema = new mongoose.Schema({
   name: { type: String, trim: true, required: true },
   email: { type: String, unique: true, lowercase: true, trim: true },
-  password: String
+  password: String,
+  locked: { type: Boolean, default: false}
 });
 
 userSchema.pre('save', function(next) {

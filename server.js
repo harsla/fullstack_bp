@@ -2,6 +2,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     expressValidator = require('express-validator'),
     jwauth = require('./lib/jwtauth'),
+    acl = require('./lib/acl'),
     jwt = require('jwt-simple'),
     cors = require('cors'),
     path = require('path');
@@ -33,7 +34,7 @@ app.post('/api/add_user', jwauth, userController.addUser);
 app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.post('/api/edit_user', jwauth, userController.postEditUser);
 app.get('/api/users', userController.checkEmailAvailable);
-app.get('/api/account', jwauth, userController.getAccount);
+app.get('/api/account', jwauth, acl, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);
 app.get('/api/edit_user', jwauth, userController.getEditUser);
 
@@ -44,7 +45,7 @@ app.get('*', function(req, res) {
 
 // error handling
 app.use(function(err, req, res, next) {
-  res.send(500, { message: err.message });
+  res.status(500).body({ message: err.message });
 });
 
 // start the server
