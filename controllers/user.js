@@ -7,6 +7,7 @@ var User = require('../models/user'),
 // Log in to an account
 // POST /login: :email :password
 exports.postLogin = function(req, res, next) {
+  'use strict';
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password cannot be blank').notEmpty();
 
@@ -62,6 +63,7 @@ exports.postLogin = function(req, res, next) {
 // Create a new account
 // POST /signup :name :email :password
 exports.postSignup = function(req, res, next) {
+  'use strict';
   req.assert('name', 'Name can not be empty').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
@@ -79,8 +81,9 @@ exports.postSignup = function(req, res, next) {
   });
 
   user.save(function(err) {
-    if (err)
-      return res.status(409).send('email already exsists').end();
+    if (err){
+      return res.status(409).send('email already exists').end();
+    }
     res.status(200).send('user ' + req.body.name + ' created').end();
   });
 };
@@ -88,6 +91,7 @@ exports.postSignup = function(req, res, next) {
 // Create a new account (can set permissions)
 // POST /add_user :name :email :password
 exports.addUser = function(req, res, next) {
+  'use strict';
   req.assert('name', 'Name can not be empty').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
@@ -105,8 +109,9 @@ exports.addUser = function(req, res, next) {
   });
 
   user.save(function(err) {
-    if (err)
+    if (err) {
       return res.status(409).send('email already exsists').end();
+    }
     res.status(200).send('user ' + req.body.name + ' created').end();
   });
 };
@@ -114,6 +119,7 @@ exports.addUser = function(req, res, next) {
 // Create a new account (can set permissions)
 // POST /delete_user :user_object
 exports.deleteUser = function(req, res, next) {
+  'use strict';
   req.assert('_id', 'User ID must be valid').len(24);
 
   var errors = req.validationErrors();
@@ -125,14 +131,17 @@ exports.deleteUser = function(req, res, next) {
   User.remove({
     _id: req.body._id
   }, function(err) {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     res.status(200).send('user ' + req.body.name + ' deleted').end();
   });
 };
 
-// Edit an exsiting account
+// Edit an existing account
 // POST /edit_user :user_object
 exports.postEditUser = function(req, res, next) {
+  'use strict';
   req.assert('_id', 'User ID must be valid').len(24);
 
   var errors = req.validationErrors();
@@ -140,34 +149,37 @@ exports.postEditUser = function(req, res, next) {
   if (errors) {
     return res.status(409).send(errors).end();
   }
-  var conditions = { _id: req.body._id };
 
-  var update = {
-      name: req.body.name,
-      email: req.body.email,
-  };
-  if (req.query.password) {
-  update.password =  req.body.password;
-  }
+  User.findById(req.body._id, function (err, doc) {
+    if (doc) {
+      doc.name = req.body.name;
+      doc.email = req.body.email;
 
-  User.update(conditions, update, callback);
+      if (req.body.password) {
+        doc.password = req.body.password;
+      }
 
-  function callback (err, numAffected) {
-    if (err){
-      return res.status(409).send(err).end();
+      if (req.body.locked){
+        doc.locked = req.body.locked;
+      }
+      doc.save(function (err){
+        if (err){
+          return res.status(409).send(err).end();
+        }
+        res.status(200).send("OK").end();
+      });
     }
-      res.status(200).send("OK").end();
-  }
-
+  });
 };
-
 
 // GET /account :token(h)
 exports.getAccount = function(req, res) {
+  'use strict';
   res.status(200).send(req.user).end();
 };
 
 exports.checkEmailAvailable = function(req, res, next) {
+  'use strict';
   if (!req.query.email) {
     return res.send(400, {
       message: 'Email parameter is required.'
@@ -177,7 +189,9 @@ exports.checkEmailAvailable = function(req, res, next) {
   User.findOne({
     email: req.query.email
   }, function(err, user) {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     res.send({
       available: !user
     });
@@ -185,16 +199,19 @@ exports.checkEmailAvailable = function(req, res, next) {
 };
 
 exports.getUsers = function(req, res, next) {
+  'use strict';
   User.find(function(err, users) {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     res.send(users);
   });
 };
 
 // Edit an exsiting account
-// POST /edit_user :user_object
+// GET /edit_user :user_object
 exports.getEditUser = function(req, res, next) {
-
+  'use strict';
   var errors = req.validationErrors();
 
   if (errors) {
@@ -202,7 +219,9 @@ exports.getEditUser = function(req, res, next) {
   }
 
   User.findById(req.query.user_id, function(err, user) {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
     res.status(200).send(user).end();
   });
 

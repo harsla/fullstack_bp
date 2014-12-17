@@ -12,4 +12,16 @@ angular.module('bpApp')
       });
     };
 
+    $scope.lockUser = function (user) {
+      user.locked = true;
+      Manage.post_edit(user).success(function(){
+      });
+    };
+
+    $scope.unLockUser = function (user) {
+      user.locked = false;
+      Manage.post_edit(user).success(function(){
+      });
+    };
+
   });
