@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
-app.post('/api/login', userController.postLogin);
+app.post('/api/login', acl, userController.postLogin);
 app.post('/api/signup', userController.postSignup);
 app.post('/api/add_user', jwauth, userController.addUser);
 app.post('/api/delete_user', jwauth, userController.deleteUser);
@@ -40,17 +40,20 @@ app.get('/api/edit_user', jwauth, userController.getEditUser);
 
 // handle pretty urls
 app.get('*', function(req, res) {
-  res.redirect('/#' + req.originalUrl);
+    'use strict';
+    res.redirect('/#' + req.originalUrl);
 });
 
 // error handling
-app.use(function(err, req, res, next) {
-  res.status(500).body({ message: err.message });
+app.use(function(err, req, res) {
+    'use strict';
+    res.status(500).body({ message: err.message });
 });
 
 // start the server
 app.listen(app.get('port'), function() {
-  console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
+    'use strict';
+    console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
 });
 
 module.exports = app;

@@ -9,7 +9,7 @@ TODO:
   - ~~Create User~~
   - ~~Remove User~~
   - ~~Edit User (reset password, change name, etc..)~~
-  - Lock account
+  - ~~Lock account~~
 * User Groups
 * Login
   - Password Reset
@@ -33,3 +33,4 @@ THOUGHTS:
 * Accounts accessing PII should have a verified IP address. To verify an IP the user should enter a time sensitive token
 delivered via email.
 * All Administrators and superusers must provide a google authenticator key to elevate into the role.  
+* Implement Fail2Ban

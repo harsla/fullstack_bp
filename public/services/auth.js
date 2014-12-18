@@ -22,11 +22,11 @@ angular.module('bpApp')
               duration: 3
             });
           })
-          .error(function() {
+          .error(function(data) {
             delete $window.localStorage.token;
             $alert({
               title: 'Error!',
-              content: 'Invalid username or password.',
+              content: data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3
