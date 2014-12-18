@@ -2,227 +2,291 @@ var User = require('../models/user'),
     jwtauth = require('../lib/jwtauth'),
     jwt = require('jwt-simple'),
     moment = require('moment'),
+    nodemailer = require('nodemailer'),
+    sgTransport = require('nodemailer-sendgrid-transport'),
+    crypto = require('crypto'),
+    async = require('async'),
     secrets = require('../config/secrets');
 
 // Log in to an account
 // POST /login: :email :password
-exports.postLogin = function(req, res, next) {
-  'use strict';
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password cannot be blank').notEmpty();
+exports.postLogin = function (req, res, next) {
+    'use strict';
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('password', 'Password cannot be blank').notEmpty();
 
-  var errors = req.validationErrors();
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(401).send(errors);
-  }
-
-  //auth here
-  User.findOne({
-    email: req.body.email
-  }, function(err, user) {
-
-    // user not found
-    if (err) {
-      return res.status(401).send('Bad email or password');
+    if (errors) {
+        return res.status(401).send(errors);
     }
 
-    // incorrect username
-    if (!user) {
-      return res.status(401).send('Bad email or password');
-    }
+    //auth here
+    User.findOne({
+        email: req.body.email
+    }, function (err, user) {
 
-    user.comparePassword(req.body.password, function(err, match) {
-      if (err) {
-        return res.status(401).send('Bad email or password (password)');
-      }
-      if (match) {
-        // User has authenticated OK
-        var expires = moment().add(7, 'days').valueOf();
-        var token = jwt.encode({
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email
-          },
-          exp: expires
-        }, secrets.jwt);
+        // user not found
+        if (err) {
+            return res.status(401).send('Bad email or password');
+        }
 
-        res.json({
-          token: token,
-          exp: expires
+        // incorrect username
+        if (!user) {
+            return res.status(401).send('User Not found');
+        }
+
+        user.comparePassword(req.body.password, function (err, match) {
+            if (err) {
+                return res.status(401).send('Bad Password');
+            }
+            if (match) {
+                // User has authenticated OK
+                var expires = moment().add(7, 'days').valueOf();
+                var token = jwt.encode({
+                    user: {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email
+                    },
+                    exp: expires
+                }, secrets.jwt);
+
+                res.json({
+                    token: token,
+                    exp: expires
+                });
+            } else {
+                //bad password
+                return res.status(401).send('Bad Password');
+            }
         });
-      } else {
-        //bad password
-        return res.status(401).send('Bad username or password (bad password)');
-      }
     });
-  });
 };
 
 // Create a new account
 // POST /signup :name :email :password
-exports.postSignup = function(req, res, next) {
-  'use strict';
-  req.assert('name', 'Name can not be empty').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
+exports.postSignup = function (req, res, next) {
+    'use strict';
+    req.assert('name', 'Name can not be empty').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('password', 'Password must be at least 4 characters long').len(4);
 
-  var errors = req.validationErrors();
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(409).send(errors);
-  }
-
-  var user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  });
-
-  user.save(function(err) {
-    if (err){
-      return res.status(409).send('email already exists').end();
+    if (errors) {
+        return res.status(409).send(errors);
     }
-    res.status(200).send('user ' + req.body.name + ' created').end();
-  });
+
+    var user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    });
+
+    user.save(function (err) {
+        if (err) {
+            return res.status(409).send('email already exists').end();
+        }
+        res.status(200).send('user ' + req.body.name + ' created').end();
+    });
 };
 
 // Create a new account (can set permissions)
 // POST /add_user :name :email :password
-exports.addUser = function(req, res, next) {
-  'use strict';
-  req.assert('name', 'Name can not be empty').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
+exports.addUser = function (req, res, next) {
+    'use strict';
+    req.assert('name', 'Name can not be empty').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('password', 'Password must be at least 4 characters long').len(4);
 
-  var errors = req.validationErrors();
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(409).send(errors);
-  }
-
-  var user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  });
-
-  user.save(function(err) {
-    if (err) {
-      return res.status(409).send('email already exsists').end();
+    if (errors) {
+        return res.status(409).send(errors);
     }
-    res.status(200).send('user ' + req.body.name + ' created').end();
-  });
+
+    var user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    });
+
+    user.save(function (err) {
+        if (err) {
+            return res.status(409).send('email already exsists').end();
+        }
+        res.status(200).send('user ' + req.body.name + ' created').end();
+    });
 };
 
 // Create a new account (can set permissions)
 // POST /delete_user :user_object
-exports.deleteUser = function(req, res, next) {
-  'use strict';
-  req.assert('_id', 'User ID must be valid').len(24);
+exports.deleteUser = function (req, res, next) {
+    'use strict';
+    req.assert('_id', 'User ID must be valid').len(24);
 
-  var errors = req.validationErrors();
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(409).send(errors).end();
-  }
-
-  User.remove({
-    _id: req.body._id
-  }, function(err) {
-    if (err) {
-      return next(err);
+    if (errors) {
+        return res.status(409).send(errors).end();
     }
-    res.status(200).send('user ' + req.body.name + ' deleted').end();
-  });
+
+    User.remove({
+        _id: req.body._id
+    }, function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.status(200).send('user ' + req.body.name + ' deleted').end();
+    });
 };
 
 // Edit an existing account
 // POST /edit_user :user_object
-exports.postEditUser = function(req, res, next) {
-  'use strict';
-  req.assert('_id', 'User ID must be valid').len(24);
+exports.postEditUser = function (req, res, next) {
+    'use strict';
+    req.assert('_id', 'User ID must be valid').len(24);
 
-  var errors = req.validationErrors();
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(409).send(errors).end();
-  }
-
-  User.findById(req.body._id, function (err, doc) {
-    if (doc) {
-      doc.name = req.body.name;
-      doc.email = req.body.email;
-
-      if (req.body.password) {
-        doc.password = req.body.password;
-      }
-
-      if (req.body.locked){
-        doc.locked = req.body.locked;
-      }
-      doc.save(function (err){
-        if (err){
-          return res.status(409).send(err).end();
-        }
-        res.status(200).send("OK").end();
-      });
+    if (errors) {
+        return res.status(409).send(errors).end();
     }
-  });
+
+    User.findById(req.body._id, function (err, doc) {
+        if (doc) {
+            doc.name = req.body.name;
+            doc.email = req.body.email;
+
+            if (req.body.password) {
+                doc.password = req.body.password;
+            }
+
+            if (req.body.locked) {
+                doc.locked = req.body.locked;
+            }
+            doc.save(function (err) {
+                if (err) {
+                    return res.status(409).send(err).end();
+                }
+                res.status(200).send("OK").end();
+            });
+        }
+    });
 };
 
 // GET /account :token(h)
-exports.getAccount = function(req, res) {
-  'use strict';
-  res.status(200).send(req.user).end();
+exports.getAccount = function (req, res) {
+    'use strict';
+    res.status(200).send(req.user).end();
 };
 
-exports.checkEmailAvailable = function(req, res, next) {
-  'use strict';
-  if (!req.query.email) {
-    return res.send(400, {
-      message: 'Email parameter is required.'
-    });
-  }
-
-  User.findOne({
-    email: req.query.email
-  }, function(err, user) {
-    if (err) {
-      return next(err);
+exports.checkEmailAvailable = function (req, res, next) {
+    'use strict';
+    if (!req.query.email) {
+        return res.send(400, {
+            message: 'Email parameter is required.'
+        });
     }
-    res.send({
-      available: !user
+
+    User.findOne({
+        email: req.query.email
+    }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        res.send({
+            available: !user
+        });
     });
-  });
 };
 
-exports.getUsers = function(req, res, next) {
-  'use strict';
-  User.find(function(err, users) {
-    if (err) {
-      return next(err);
-    }
-    res.send(users);
-  });
+// returns all users
+// GET /manage
+exports.getUsers = function (req, res, next) {
+    'use strict';
+    User.find(function (err, users) {
+        if (err) {
+            return next(err);
+        }
+        res.send(users);
+    });
 };
 
 // Edit an exsiting account
 // GET /edit_user :user_object
-exports.getEditUser = function(req, res, next) {
-  'use strict';
-  var errors = req.validationErrors();
+exports.getEditUser = function (req, res, next) {
+    'use strict';
+    var errors = req.validationErrors();
 
-  if (errors) {
-    return res.status(409).send(errors).end();
-  }
-
-  User.findById(req.query.user_id, function(err, user) {
-    if (err) {
-      return next(err);
+    if (errors) {
+        return res.status(409).send(errors).end();
     }
-    res.status(200).send(user).end();
-  });
 
+    User.findById(req.query.user_id, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        res.status(200).send(user).end();
+    });
 };
+
+// Request a password reset
+// GET /forgot :user_object
+exports.getForgotPassword = function (req, res, next) {
+    'use strict';
+    console.log(req.body);
+    async.waterfall([
+        function(done) {
+            crypto.randomBytes(20, function(err, buf) {
+                var token = buf.toString('hex');
+                done(err, token);
+            });
+        },function(token, done) {
+            User.findOne({ email: req.body.email }, function(err, user) {
+                if (!user) {
+                    return res.status(409).send('No account with that email address exists.').end();
+                }
+
+                user.resetPasswordToken = token;
+                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+                user.save(function(err) {
+                    done(err, token, user);
+                });
+            });
+        },
+        function(token, user, done) {
+            var options = {
+                auth: {
+                    api_user: secrets.smtpuser,
+                    api_key: secrets.smtppassword
+                }
+            };
+            var mailer = nodemailer.createTransport(sgTransport(options));
+
+            var email = {
+                from: 'noreply@' + secrets.company + '.com',
+                to: user.email,
+                subject: 'Password Reset Request',
+                text: 'You are receiving this message because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            };
+
+            mailer.sendMail(email, function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                done('An e-mail has been sent to ' + user.email + ' with further instructions.');
+            });
+        }
+
+    ], function(message) {
+        return res.status(200).send(message).end();
+    });
+};
+
+

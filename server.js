@@ -10,7 +10,7 @@ var express = require('express'),
 // sensitive
 var secrets = require('./config/secrets');
 
-// controlers
+// controllers
 var userController = require('./controllers/user');
 
 // Database configuration
@@ -33,10 +33,12 @@ app.post('/api/signup', userController.postSignup);
 app.post('/api/add_user', jwauth, userController.addUser);
 app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.post('/api/edit_user', jwauth, userController.postEditUser);
+app.post('/api/forgot', userController.getForgotPassword);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/account', jwauth, acl, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);
 app.get('/api/edit_user', jwauth, userController.getEditUser);
+
 
 // handle pretty urls
 app.get('*', function(req, res) {
