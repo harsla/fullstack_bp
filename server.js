@@ -3,7 +3,6 @@ var express = require('express'),
     expressValidator = require('express-validator'),
     jwauth = require('./lib/jwtauth'),
     acl = require('./lib/acl'),
-    jwt = require('jwt-simple'),
     cors = require('cors'),
     path = require('path');
 
@@ -35,6 +34,7 @@ app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.post('/api/edit_user', jwauth, userController.postEditUser);
 app.post('/api/forgot', userController.getForgotPassword);
 app.post('/api/reset', userController.postResetPassword);
+app.post('/api/confirm', userController.postConfirmEmail);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/account', jwauth, acl, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);

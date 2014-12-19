@@ -35,11 +35,11 @@ angular.module('bpApp')
       },
       signup: function(user) {
         return $http.post('/api/signup', user)
-          .success(function() {
+            .success(function (data) {
             $location.path('/login');
             $alert({
               title: 'Congratulations!',
-              content: 'Your account has been created.',
+              content: data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3
@@ -54,6 +54,28 @@ angular.module('bpApp')
               duration: 3
             });
           });
+      },
+      confirm: function (token) {
+        return $http.post('/api/confirm', token)
+            .success(function (data) {
+              $location.path('/home');
+              $alert({
+                title: 'Account Activated!',
+                content: data,
+                animation: 'fadeZoomFadeDown',
+                type: 'material',
+                duration: 3
+              });
+            })
+            .error(function (response) {
+              $alert({
+                title: 'Error!',
+                content: response,
+                animation: 'fadeZoomFadeDown',
+                type: 'material',
+                duration: 3
+              });
+            });
       },
       addUser: function(user) {
         return $http.post('/api/add_user', user)

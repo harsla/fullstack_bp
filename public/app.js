@@ -23,6 +23,10 @@ angular.module('bpApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mg
                 templateUrl: 'views/reset.html',
                 controller: 'ResetCtrl'
             })
+            .when('/confirm/:token', {
+                templateUrl: 'views/home.html',
+                controller: 'ConfirmCtrl'
+            })
             .when('/secure', {
                 templateUrl: 'views/secure.html',
                 controller: 'SecureCtrl'

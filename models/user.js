@@ -7,7 +7,10 @@ var userSchema = new mongoose.Schema({
   password: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date,
-  locked: { type: Boolean, default: false}
+  locked: {type: Boolean, default: false},
+  emailConfirmationToken: String,
+  emailConfirmationDate: Date,
+  confirmed: {type: Boolean, default: false}
 });
 
 userSchema.pre('save', function(next) {

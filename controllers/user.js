@@ -1,5 +1,4 @@
 var User = require('../models/user'),
-    jwtauth = require('../lib/jwtauth'),
     jwt = require('jwt-simple'),
     moment = require('moment'),
     nodemailer = require('nodemailer'),
@@ -10,8 +9,7 @@ var User = require('../models/user'),
 
 // Log in to an account
 // POST /login: :email :password
-exports.postLogin = function (req, res, next) {
-    'use strict';
+exports.postLogin = function (req, res) {
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password cannot be blank').notEmpty();
 
@@ -66,8 +64,93 @@ exports.postLogin = function (req, res, next) {
 
 // Create a new account
 // POST /signup :name :email :password
-exports.postSignup = function (req, res, next) {
-    'use strict';
+exports.postSignup = function (req, res) {
+    req.assert('name', 'Name can not be empty').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('password', 'Password must be at least 4 characters long').len(4);
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+        return res.status(409).send(errors);
+    }
+
+    //Send a confirmation email
+    async.waterfall([
+        function (done) {
+            crypto.randomBytes(20, function (err, buf) {
+                var token = buf.toString('hex');
+                done(err, token);
+            });
+        }, function (token, done) {
+            var user = new User({
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
+                emailConfirmationToken: token,
+                emailConfirmationDate: Date.now()
+            });
+            user.save(function (err) {
+                done(err, token, user);
+            });
+        },
+        function (token, user, done) {
+            var options = {
+                auth: {
+                    api_user: secrets.smtpuser,
+                    api_key: secrets.smtppassword
+                }
+            };
+            var mailer = nodemailer.createTransport(sgTransport(options));
+
+            var email = {
+                from: 'noreply@' + secrets.company + '.com',
+                to: user.email,
+                subject: 'Welcome to ' + secrets.company + ', please confirm your account',
+                text: 'Confirming your account will allow you to log in and all future notifications will be sent to this email address.\n\n' +
+                'Please visit the following url:\n\n' +
+                'http://' + req.headers.host + '/confirm/' + token + '\n'
+            };
+
+            mailer.sendMail(email, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+                done('An e-mail has been sent to ' + user.email + ' with instructions to activate the account.');
+            });
+        }
+
+    ], function (message) {
+        return res.status(200).send(message).end();
+    });
+};
+
+// Validate the users email address
+// POST /confirm :token
+exports.postConfirmEmail = function (req, res) {
+    User.findOne({
+        emailConfirmationToken: req.body.token
+        //resetPasswordExpires: {$gt: Date.now()}
+    }, function (err, user) {
+        console.log(user);
+        if (!user) {
+            return res.status(409).send('Token is no longer valid.').end();
+            //TODO: We should delete the account here.
+        }
+        user.confirmed = true;
+        user.save(function (err) {
+            if (err) {
+                return res.status(409).send(err).end();
+            }
+            console.log(user);
+            return res.status(200).send('Your account has been activated, please login.')
+        });
+    });
+};
+
+// Create a new account (can set permissions)
+// POST /add_user :name :email :password
+exports.addUser = function (req, res) {
     req.assert('name', 'Name can not be empty').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password must be at least 4 characters long').len(4);
@@ -92,38 +175,9 @@ exports.postSignup = function (req, res, next) {
     });
 };
 
-// Create a new account (can set permissions)
-// POST /add_user :name :email :password
-exports.addUser = function (req, res, next) {
-    'use strict';
-    req.assert('name', 'Name can not be empty').notEmpty();
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('password', 'Password must be at least 4 characters long').len(4);
-
-    var errors = req.validationErrors();
-
-    if (errors) {
-        return res.status(409).send(errors);
-    }
-
-    var user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    user.save(function (err) {
-        if (err) {
-            return res.status(409).send('email already exsists').end();
-        }
-        res.status(200).send('user ' + req.body.name + ' created').end();
-    });
-};
-
-// Create a new account (can set permissions)
+// Remove an account
 // POST /delete_user :user_object
 exports.deleteUser = function (req, res, next) {
-    'use strict';
     req.assert('_id', 'User ID must be valid').len(24);
 
     var errors = req.validationErrors();
@@ -144,8 +198,7 @@ exports.deleteUser = function (req, res, next) {
 
 // Edit an existing account
 // POST /edit_user :user_object
-exports.postEditUser = function (req, res, next) {
-    'use strict';
+exports.postEditUser = function (req, res) {
     req.assert('_id', 'User ID must be valid').len(24);
 
     var errors = req.validationErrors();
@@ -178,12 +231,10 @@ exports.postEditUser = function (req, res, next) {
 
 // GET /account :token(h)
 exports.getAccount = function (req, res) {
-    'use strict';
     res.status(200).send(req.user).end();
 };
 
 exports.checkEmailAvailable = function (req, res, next) {
-    'use strict';
     if (!req.query.email) {
         return res.send(400, {
             message: 'Email parameter is required.'
@@ -205,7 +256,6 @@ exports.checkEmailAvailable = function (req, res, next) {
 // returns all users
 // GET /manage
 exports.getUsers = function (req, res, next) {
-    'use strict';
     User.find(function (err, users) {
         if (err) {
             return next(err);
@@ -217,7 +267,6 @@ exports.getUsers = function (req, res, next) {
 // Edit an exsiting account
 // GET /edit_user :user_object
 exports.getEditUser = function (req, res, next) {
-    'use strict';
     var errors = req.validationErrors();
 
     if (errors) {
@@ -236,8 +285,6 @@ exports.getEditUser = function (req, res, next) {
 // Request a password reset
 // POST /reset :user_object
 exports.postResetPassword = function (req, res) {
-    'use strict';
-    console.log(req);
     User.findOne({
         resetPasswordToken: req.body.params.token,
         resetPasswordExpires: {$gt: Date.now()}
@@ -280,9 +327,8 @@ exports.postResetPassword = function (req, res) {
 };
 
 // Request a password reset
-// GET /forgot :user_object
-exports.getForgotPassword = function (req, res, next) {
-    'use strict';
+// POST /forgot :user_object
+exports.getForgotPassword = function (req, res) {
     async.waterfall([
         function (done) {
             crypto.randomBytes(20, function (err, buf) {
@@ -334,5 +380,3 @@ exports.getForgotPassword = function (req, res, next) {
         return res.status(200).send(message).end();
     });
 };
-
-
