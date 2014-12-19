@@ -6,7 +6,7 @@ angular.module('bpApp')
           .success(function(data) {
             $location.path('/manage');
             $alert({
-              title: user.name.toUpperCase() + " HAS BEEN DELETED!",
+              title: user.username.toUpperCase() + " HAS BEEN DELETED!",
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3
@@ -27,7 +27,7 @@ angular.module('bpApp')
           .success(function(data) {
             $location.path('/manage');
             $alert({
-              title: user.name.toUpperCase() + " HAS BEEN UPDATED!",
+              title: user.username.toUpperCase() + " HAS BEEN UPDATED!",
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3

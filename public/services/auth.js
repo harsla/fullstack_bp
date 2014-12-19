@@ -16,7 +16,7 @@ angular.module('bpApp')
             $location.path('/');
             $alert({
               title: 'HELLO, ',
-              content: payload.user.name.toUpperCase() + "!  ",
+              content: payload.user.username.toUpperCase() + "!  ",
               animation: 'fadeZoomFadeDown',
               type: 'material',
               duration: 3

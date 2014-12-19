@@ -3,7 +3,7 @@ angular.module('bpApp')
 
     // Populate the user data
       Manage.get_edit($routeParams).success(function(user){
-        $scope.displayName = user.name;
+        $scope.displayName = user.username;
         $scope.email = user.email;
       });
 
@@ -11,7 +11,7 @@ angular.module('bpApp')
       $scope.edit = function () {
         user = {
           _id: $routeParams.user_id,
-          name: $scope.displayName,
+          username: $scope.displayName,
             email: $scope.email
         };
         if ($scope.password) {

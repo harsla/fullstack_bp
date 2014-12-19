@@ -1,5 +1,7 @@
+'use strict';
+
 var User = require('../models/user'),
-    jwtauth = require('../lib/jwtauth'),
+    auth = require('../lib/auth'),
     jwt = require('jwt-simple'),
     moment = require('moment'),
     nodemailer = require('nodemailer'),
@@ -11,7 +13,6 @@ var User = require('../models/user'),
 // Log in to an account
 // POST /login: :email :password
 exports.postLogin = function (req, res, next) {
-    'use strict';
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password cannot be blank').notEmpty();
 
@@ -46,7 +47,7 @@ exports.postLogin = function (req, res, next) {
                 var token = jwt.encode({
                     user: {
                         id: user._id,
-                        name: user.name,
+                        username: user.username,
                         email: user.email
                     },
                     exp: expires
@@ -65,10 +66,10 @@ exports.postLogin = function (req, res, next) {
 };
 
 // Create a new account
-// POST /signup :name :email :password
+// POST /signup :username :email :password
 exports.postSignup = function (req, res, next) {
-    'use strict';
-    req.assert('name', 'Name can not be empty').notEmpty();
+
+    req.assert('username', 'Username can not be empty').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password must be at least 4 characters long').len(4);
 
@@ -79,7 +80,7 @@ exports.postSignup = function (req, res, next) {
     }
 
     var user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password
     });
@@ -93,10 +94,10 @@ exports.postSignup = function (req, res, next) {
 };
 
 // Create a new account (can set permissions)
-// POST /add_user :name :email :password
+// POST /add_user :username :email :password
 exports.addUser = function (req, res, next) {
-    'use strict';
-    req.assert('name', 'Name can not be empty').notEmpty();
+
+    req.assert('username', 'Username can not be empty').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password must be at least 4 characters long').len(4);
 
@@ -107,7 +108,7 @@ exports.addUser = function (req, res, next) {
     }
 
     var user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password
     });
@@ -116,14 +117,14 @@ exports.addUser = function (req, res, next) {
         if (err) {
             return res.status(409).send('email already exsists').end();
         }
-        res.status(200).send('user ' + req.body.name + ' created').end();
+        res.status(200).send('user ' + req.body.username + ' created').end();
     });
 };
 
 // Create a new account (can set permissions)
 // POST /delete_user :user_object
 exports.deleteUser = function (req, res, next) {
-    'use strict';
+
     req.assert('_id', 'User ID must be valid').len(24);
 
     var errors = req.validationErrors();
@@ -138,14 +139,14 @@ exports.deleteUser = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.status(200).send('user ' + req.body.name + ' deleted').end();
+        res.status(200).send('user ' + req.body.username + ' deleted').end();
     });
 };
 
 // Edit an existing account
 // POST /edit_user :user_object
 exports.postEditUser = function (req, res, next) {
-    'use strict';
+
     req.assert('_id', 'User ID must be valid').len(24);
 
     var errors = req.validationErrors();
@@ -156,7 +157,7 @@ exports.postEditUser = function (req, res, next) {
 
     User.findById(req.body._id, function (err, doc) {
         if (doc) {
-            doc.name = req.body.name;
+            doc.username = req.body.username;
             doc.email = req.body.email;
 
             if (req.body.password) {
@@ -170,7 +171,7 @@ exports.postEditUser = function (req, res, next) {
                 if (err) {
                     return res.status(409).send(err).end();
                 }
-                res.status(200).send("OK").end();
+                res.status(200).send('OK').end();
             });
         }
     });
@@ -178,12 +179,12 @@ exports.postEditUser = function (req, res, next) {
 
 // GET /account :token(h)
 exports.getAccount = function (req, res) {
-    'use strict';
+
     res.status(200).send(req.user).end();
 };
 
 exports.checkEmailAvailable = function (req, res, next) {
-    'use strict';
+
     if (!req.query.email) {
         return res.send(400, {
             message: 'Email parameter is required.'
@@ -205,7 +206,7 @@ exports.checkEmailAvailable = function (req, res, next) {
 // returns all users
 // GET /manage
 exports.getUsers = function (req, res, next) {
-    'use strict';
+
     User.find(function (err, users) {
         if (err) {
             return next(err);
@@ -217,7 +218,7 @@ exports.getUsers = function (req, res, next) {
 // Edit an exsiting account
 // GET /edit_user :user_object
 exports.getEditUser = function (req, res, next) {
-    'use strict';
+
     var errors = req.validationErrors();
 
     if (errors) {
@@ -236,7 +237,7 @@ exports.getEditUser = function (req, res, next) {
 // Request a password reset
 // POST /reset :user_object
 exports.postResetPassword = function (req, res) {
-    'use strict';
+
     console.log(req);
     User.findOne({
         resetPasswordToken: req.body.params.token,
@@ -272,7 +273,7 @@ exports.postResetPassword = function (req, res) {
                 if (err) {
                     console.log(err);
                 }
-                res.status(200).send("Your password has been changed.").end();
+                res.status(200).send('Your password has been changed.').end();
             });
 
         });
@@ -282,7 +283,7 @@ exports.postResetPassword = function (req, res) {
 // Request a password reset
 // GET /forgot :user_object
 exports.getForgotPassword = function (req, res, next) {
-    'use strict';
+
     async.waterfall([
         function (done) {
             crypto.randomBytes(20, function (err, buf) {
@@ -316,10 +317,13 @@ exports.getForgotPassword = function (req, res, next) {
                 from: 'noreply@' + secrets.company + '.com',
                 to: user.email,
                 subject: 'Password Reset Request',
-                text: 'You are receiving this message because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                text: 'You are receiving this message because you (or someone else)' +
+                'have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser' +
+                'to complete the process:\n\n' +
                 'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                'If you did not request this, please ignore this email and your password' +
+                 'will remain unchanged.\n'
             };
 
             mailer.sendMail(email, function (err) {
@@ -334,5 +338,3 @@ exports.getForgotPassword = function (req, res, next) {
         return res.status(200).send(message).end();
     });
 };
-
-
