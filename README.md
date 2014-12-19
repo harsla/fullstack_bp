@@ -1,7 +1,10 @@
-#fullstack_bp
-============
-
 #A fullstack boilerplate using Express 4, MongoDB, AngularJS, and JWT Auth
+
+![Jumbo](public/images/jumbo.jpg)
+
+![signup](public/images/signup.jpg)
+
+![users](public/images/users.jpg)
 
 ###High level list of (probably) working features:
 ------------------------------------------
