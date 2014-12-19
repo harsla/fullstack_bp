@@ -232,19 +232,65 @@ exports.getEditUser = function (req, res, next) {
     });
 };
 
+
+// Request a password reset
+// POST /reset :user_object
+exports.postResetPassword = function (req, res) {
+    'use strict';
+    console.log(req);
+    User.findOne({
+        resetPasswordToken: req.body.params.token,
+        resetPasswordExpires: {$gt: Date.now()}
+    }, function (err, user) {
+        if (!user) {
+            return res.status(409).send('Password reset token is no longer valid.').end();
+        }
+        user.password = req.body.params.password;
+        user.save(function (err) {
+            if (err) {
+                return res.status(409).send(err).end();
+            }
+
+
+            var options = {
+                auth: {
+                    api_user: secrets.smtpuser,
+                    api_key: secrets.smtppassword
+                }
+            };
+            var mailer = nodemailer.createTransport(sgTransport(options));
+
+            var email = {
+                from: 'noreply@' + secrets.company + '.com',
+                to: user.email,
+                subject: 'Your password has been changed',
+                text: 'Hello,\n\n' +
+                'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+            };
+
+            mailer.sendMail(email, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+                res.status(200).send("Your password has been changed.").end();
+            });
+
+        });
+    });
+};
+
 // Request a password reset
 // GET /forgot :user_object
 exports.getForgotPassword = function (req, res, next) {
     'use strict';
-    console.log(req.body);
     async.waterfall([
-        function(done) {
-            crypto.randomBytes(20, function(err, buf) {
+        function (done) {
+            crypto.randomBytes(20, function (err, buf) {
                 var token = buf.toString('hex');
                 done(err, token);
             });
-        },function(token, done) {
-            User.findOne({ email: req.body.email }, function(err, user) {
+        }, function (token, done) {
+            User.findOne({email: req.body.email}, function (err, user) {
                 if (!user) {
                     return res.status(409).send('No account with that email address exists.').end();
                 }
@@ -252,12 +298,12 @@ exports.getForgotPassword = function (req, res, next) {
                 user.resetPasswordToken = token;
                 user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-                user.save(function(err) {
+                user.save(function (err) {
                     done(err, token, user);
                 });
             });
         },
-        function(token, user, done) {
+        function (token, user, done) {
             var options = {
                 auth: {
                     api_user: secrets.smtpuser,
@@ -276,7 +322,7 @@ exports.getForgotPassword = function (req, res, next) {
                 'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
 
-            mailer.sendMail(email, function(err) {
+            mailer.sendMail(email, function (err) {
                 if (err) {
                     console.log(err);
                 }
@@ -284,7 +330,7 @@ exports.getForgotPassword = function (req, res, next) {
             });
         }
 
-    ], function(message) {
+    ], function (message) {
         return res.status(200).send(message).end();
     });
 };

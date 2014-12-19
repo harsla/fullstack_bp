@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="row">
+        <div class="center-form panel">
+            <div class="panel-body">
+                <h5 class="text-center">Please enter a new password:</h5>
+
+                <form method="post" ng-submit="reset()" name="resetForm">
+
+                    <div class="form-group has-feedback"
+                         ng-class="{ 'has-error' : signupForm.password.$invalid && signupForm.password.$dirty }">
+                        <input password-strength class="form-control input-lg" type="password" name="password"
+                               ng-model="password" placeholder="Password">
+                        <span class="ion-key form-control-feedback"></span>
+
+                        <div class="help-block text-danger" ng-if="signupForm.password.$dirty"
+                             ng-messages="signupForm.password.$error">
+                        </div>
+                    </div>
+
+                    <button type="submit" ng-disabled="resetForm.$invalid" class="btn btn-lg btn-block btn-success">
+                        Submit
+                    </button>
+
+                    <br/>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,14 +5,6 @@ A fullstack boilerplate using Express 4, MongoDB, AngularJS, and JWT Auth
 
 
 TODO:
-* User management
-  - ~~Create User~~
-  - ~~Remove User~~
-  - ~~Edit User (reset password, change name, etc..)~~
-  - ~~Lock account~~
-* User Groups
-* Login
-  - Password Reset
 * Signup
   - Confirm email
 * User Profile
@@ -20,6 +12,10 @@ TODO:
   - Edit name
   - Change email
   - Account Picture
+* Accounts originating from a strange IP should need to verify by entering a time sensitive token
+delivered via email.
+* All Administrators and superusers must provide a google authenticator key to elevate into the role.  
+* Implement Fail2Ban
 
 BLING:
   * User panel directives (animate delete and add)
@@ -27,10 +23,3 @@ BLING:
   * List view for users
   * Paging
   * Account security (repeat lockout, ip record, etc)
-
-THOUGHTS:
-* To disable a user account, we should add a disabled flag and check it on every request (and the group)
-* Accounts accessing PII should have a verified IP address. To verify an IP the user should enter a time sensitive token
-delivered via email.
-* All Administrators and superusers must provide a google authenticator key to elevate into the role.  
-* Implement Fail2Ban

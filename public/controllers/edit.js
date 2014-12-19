@@ -12,7 +12,7 @@ angular.module('bpApp')
         user = {
           _id: $routeParams.user_id,
           name: $scope.displayName,
-          email: $scope.email,
+            email: $scope.email
         };
         if ($scope.password) {
           user.password = $scope.password;

@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="row">
+        <div class="center-form panel">
+            <div class="panel-body">
+                <h3 class="text-center">Forget something?</h3>
+                <h6 class="text-center">No Problem! Enter your email and we will send you instructions to reset your
+                    password.</h6>
+
+                <form method="post" ng-submit="forgot()" name="forgotForm">
+                    <div class="form-group has-feedback">
+                        <input class="form-control input-lg" type="text" name="email" ng-model="email"
+                               placeholder="Email" required autofocus>
+                        <span class="ion-at form-control-feedback"></span>
+                    </div>
+
+                    <button type="submit" ng-disabled="forgotForm.$invalid" class="btn btn-lg btn-block btn-success">
+                        Submit
+                    </button>
+
+                    <br/>
+
+                    <p class="text-center">
+                        <a href="/login">Return to Login</a>
+                    </p>
+
+                    <p class="text-center text-muted">
+                        <small>Don't have an account yet? <a href="/signup">Sign up</a></small>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

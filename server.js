@@ -34,6 +34,7 @@ app.post('/api/add_user', jwauth, userController.addUser);
 app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.post('/api/edit_user', jwauth, userController.postEditUser);
 app.post('/api/forgot', userController.getForgotPassword);
+app.post('/api/reset', userController.postResetPassword);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/account', jwauth, acl, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);
