@@ -10,7 +10,8 @@ var express = require('express'),
 var secrets = require('./config/secrets');
 
 // controllers
-var userController = require('./controllers/user');
+var userController = require('./controllers/user'),
+    authController = require('./controllers/auth');
 
 // Database configuration
 var mongoose = require('mongoose');
@@ -27,14 +28,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
-app.post('/api/login', acl, userController.postLogin);
-app.post('/api/signup', userController.postSignup);
+app.post('/api/login', acl, authController.postLogin);
+app.post('/api/signup', authController.postSignup);
+app.post('/api/forgot', authController.getForgotPassword);
+app.post('/api/reset', authController.postResetPassword);
+app.post('/api/confirm', authController.postConfirmEmail);
 app.post('/api/add_user', jwauth, userController.addUser);
 app.post('/api/delete_user', jwauth, userController.deleteUser);
 app.post('/api/edit_user', jwauth, userController.postEditUser);
-app.post('/api/forgot', userController.getForgotPassword);
-app.post('/api/reset', userController.postResetPassword);
-app.post('/api/confirm', userController.postConfirmEmail);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/account', jwauth, acl, userController.getAccount);
 app.get('/api/manage', jwauth, userController.getUsers);

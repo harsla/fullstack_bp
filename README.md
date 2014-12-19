@@ -10,7 +10,7 @@
 ------------------------------------------
 1. User registration, login, password reset functionality
 2. Email confirmations for password reset and account registration
-3. Very basic user management (lock account, reset password, change name, change email, etc)
+3. Very basic user management (add/remove user, lock account, reset password, change name, change email, etc)
 4. 'Random' background directive to keep you sane as you dev =p
 5. Password strength and valid email directives
 
@@ -30,6 +30,7 @@ module.exports = {
 -------------------------------------------
 
 TODO:
+* Resend account confirmation email
 * ACL Groups & Roles
 * User Profile
   - Change password
