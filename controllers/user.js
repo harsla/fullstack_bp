@@ -1,15 +1,9 @@
 var User = require('../models/user'),
-    jwt = require('jwt-simple'),
-    moment = require('moment'),
-    nodemailer = require('nodemailer'),
-    sgTransport = require('nodemailer-sendgrid-transport'),
-    crypto = require('crypto'),
-    async = require('async'),
-    secrets = require('../config/secrets');
+    moment = require('moment');
 
 
 // Create a new account (can set permissions)
-// POST /add_user :name :email :password
+// POST /api/add_user :name :email :password
 exports.addUser = function (req, res) {
     req.assert('name', 'Name can not be empty').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
@@ -36,7 +30,7 @@ exports.addUser = function (req, res) {
 };
 
 // Remove an account
-// POST /delete_user :user_object
+// POST /api/delete_user :user_object
 exports.deleteUser = function (req, res, next) {
     req.assert('_id', 'User ID must be valid').len(24);
 
@@ -57,7 +51,7 @@ exports.deleteUser = function (req, res, next) {
 };
 
 // Edit an existing account
-// POST /edit_user :user_object
+// POST /api/edit_user :user_object
 exports.postEditUser = function (req, res) {
     req.assert('_id', 'User ID must be valid').len(24);
 
@@ -90,6 +84,7 @@ exports.postEditUser = function (req, res) {
 };
 
 // GET /account :token(h)
+// GET /api/account
 exports.getAccount = function (req, res) {
     res.status(200).send(req.user).end();
 };
@@ -114,7 +109,7 @@ exports.checkEmailAvailable = function (req, res, next) {
 };
 
 // returns all users
-// GET /manage
+// GET /api/manage
 exports.getUsers = function (req, res, next) {
     User.find(function (err, users) {
         if (err) {
@@ -124,8 +119,8 @@ exports.getUsers = function (req, res, next) {
     });
 };
 
-// Edit an exsiting account
-// GET /edit_user :user_object
+// Edit an existing account
+// GET /api/edit_user :user_object
 exports.getEditUser = function (req, res, next) {
     var errors = req.validationErrors();
 

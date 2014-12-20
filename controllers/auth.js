@@ -9,7 +9,7 @@ var User = require('../models/user'),
 
 
 // Log in to an account
-// POST /login: :email :password
+// POST /api/login: :email :password
 exports.postLogin = function (req, res) {
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password cannot be blank').notEmpty();
@@ -64,7 +64,7 @@ exports.postLogin = function (req, res) {
 };
 
 // Create a new account
-// POST /signup :name :email :password
+// POST /api/signup :name :email :password
 exports.postSignup = function (req, res) {
     req.assert('name', 'Name can not be empty').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
@@ -127,7 +127,7 @@ exports.postSignup = function (req, res) {
 };
 
 // Validate the users email address
-// POST /confirm :token
+// POST /api/confirm :token
 exports.postConfirmEmail = function (req, res) {
     User.findOne({
         emailConfirmationToken: req.body.token
@@ -150,7 +150,7 @@ exports.postConfirmEmail = function (req, res) {
 };
 
 // Request a password reset
-// POST /reset :user_object
+// POST /api/reset :token :password
 exports.postResetPassword = function (req, res) {
     User.findOne({
         resetPasswordToken: req.body.params.token,
@@ -194,7 +194,7 @@ exports.postResetPassword = function (req, res) {
 };
 
 // Request a password reset
-// POST /forgot :user_object
+// POST /api/forgot :email
 exports.getForgotPassword = function (req, res) {
     async.waterfall([
         function (done) {
