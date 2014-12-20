@@ -83,12 +83,14 @@ exports.postEditUser = function (req, res) {
     });
 };
 
-// GET /account :token(h)
-// GET /api/account
+// Gets user account data
+// GET /api/account :jwt
 exports.getAccount = function (req, res) {
     res.status(200).send(req.user).end();
 };
 
+// Checks if the email is already taken TODO: protect with fail2ban
+// GET /api/users :email
 exports.checkEmailAvailable = function (req, res, next) {
     if (!req.query.email) {
         return res.send(400, {
@@ -116,6 +118,28 @@ exports.getUsers = function (req, res, next) {
             return next(err);
         }
         res.send(users);
+    });
+};
+
+// user: check if the email has been activated
+// GET /api/check_activated :email
+exports.checkEmailActivated = function (req, res, next) {
+    if (!req.query.email) {
+        return res.send(400, {
+            message: 'Email parameter is required.'
+        });
+    }
+
+    User.findOne({
+        email: req.query.email
+    }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        res.send({
+            activated: user.confirmed,
+            sent: user.emailConfirmationDate
+        });
     });
 };
 

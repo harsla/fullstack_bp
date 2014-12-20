@@ -19,7 +19,7 @@ angular.module('bpApp')
               content: payload.user.name.toUpperCase() + "!  ",
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           })
           .error(function(data) {
@@ -29,7 +29,7 @@ angular.module('bpApp')
               content: data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           });
       },
@@ -42,7 +42,7 @@ angular.module('bpApp')
               content: data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           })
           .error(function(response) {
@@ -51,7 +51,7 @@ angular.module('bpApp')
               content: response.data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           });
       },
@@ -64,7 +64,7 @@ angular.module('bpApp')
                 content: data,
                 animation: 'fadeZoomFadeDown',
                 type: 'material',
-                duration: 3
+                duration: 5
               });
             })
             .error(function (response) {
@@ -86,7 +86,7 @@ angular.module('bpApp')
               content: 'user account has been created.',
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           })
           .error(function(response) {
@@ -95,7 +95,7 @@ angular.module('bpApp')
               content: response.data,
               animation: 'fadeZoomFadeDown',
               type: 'material',
-              duration: 3
+              duration: 5
             });
           });
       },
@@ -106,7 +106,7 @@ angular.module('bpApp')
           content: 'You have been logged out.',
           animation: 'fadeZoomFadeDown',
           type: 'material',
-          duration: 3
+          duration: 5
         });
       }
     };

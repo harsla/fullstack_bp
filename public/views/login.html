@@ -4,10 +4,13 @@
         <div class="panel-body">
           <h2 class="text-center">Log in</h2>
           <form method="post" ng-submit="login()" name="loginForm">
+
             <div class="form-group has-feedback">
-              <input class="form-control input-lg" type="text" name="email" ng-model="email" placeholder="Email" required autofocus>
+              <input resend-activation ctivation class="form-control input-lg" type="text" name="email" ng-model="email"
+                     placeholder="Email" required autofocus>
               <span class="ion-at form-control-feedback"></span>
             </div>
+
 
             <div class="form-group has-feedback">
               <input class="form-control input-lg" type="password" name="password" ng-model="password" placeholder="Password" required>
@@ -17,6 +20,15 @@
             <button type="submit" ng-disabled="loginForm.$invalid" class="btn btn-lg btn-block btn-success">Log in</button>
 
             <br/>
+
+            <div class="help-block text-danger" ng-if="loginForm.email.$dirty" ng-messages="loginForm.email.$error">
+              <div ng-message="activated">
+                <p class="text-center">
+                  Your email address ({{email}}) has not been activated. Please check your email or
+                  <a href="/api/resend">Click Here</a> to resend the email.
+                </p>
+              </div>
+            </div>
 
             <p class="text-center">
               <a href="/forgot">Forgot your password?</a>

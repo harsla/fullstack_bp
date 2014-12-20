@@ -247,3 +247,44 @@ exports.getForgotPassword = function (req, res) {
         return res.status(200).send(message).end();
     });
 };
+
+//auth: resend activation email
+//POST /api/resend :email
+exports.resendActivationEmail = function (req, res) {
+    if (!req.body.email) {
+        return res.send(400, {
+            message: 'Email parameter is required.'
+        });
+    }
+
+    User.findOne({
+        email: req.body.email
+    }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        var options = {
+            auth: {
+                api_user: secrets.smtpuser,
+                api_key: secrets.smtppassword
+            }
+        };
+        var mailer = nodemailer.createTransport(sgTransport(options));
+
+        var email = {
+            from: 'noreply@' + secrets.company + '.com',
+            to: user.email,
+            subject: 'Welcome to ' + secrets.company + ', please confirm your account',
+            text: 'Confirming your account will allow you to log in and all future notifications will be sent to this email address.\n\n' +
+            'Please visit the following url:\n\n' +
+            'http://' + req.headers.host + '/confirm/' + user.emailConfirmationToken + '\n'
+        };
+
+        mailer.sendMail(email, function (err) {
+            if (err) {
+                console.log(err);
+            }
+            res.send('An e-mail has been sent to ' + user.email + ' with instructions to activate the account.').end();
+        });
+    });
+};

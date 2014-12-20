@@ -30,7 +30,7 @@ module.exports = {
 -------------------------------------------
 
 TODO:
-* Resend account confirmation email
+* ~~Resend account confirmation email~~ (just need to hook up client link)
 * ACL Groups & Roles
 * User Profile
   - Change password
