@@ -261,7 +261,7 @@ exports.resendActivationEmail = function (req, res) {
             return next(err);
         }
         if (user.confirmed) {
-            return res.send('account already activated').end();
+            return res.status(403).send('account already activated').end();
         }
         var options = {
             auth: {

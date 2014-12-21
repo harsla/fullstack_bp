@@ -14,8 +14,10 @@
 4. 'Random' background directive to keep you sane as you dev =p
 5. Password strength and valid email directives
 
-You will need to create a directory named 'config' with a file named 'secrets.js' containing the following:
-example `config/secrets.js`:
+You will need to create a directory named `config` with a file named `secrets.js` containing the following:
+example
+
+`config/secrets.js`:
 ```javascript
 module.exports = {
 
