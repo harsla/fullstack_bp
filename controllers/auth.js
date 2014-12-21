@@ -133,7 +133,6 @@ exports.postConfirmEmail = function (req, res) {
         emailConfirmationToken: req.body.token
         //resetPasswordExpires: {$gt: Date.now()}
     }, function (err, user) {
-        console.log(user);
         if (!user) {
             return res.status(409).send('Token is no longer valid.').end();
             //TODO: We should delete the account here.
@@ -143,7 +142,6 @@ exports.postConfirmEmail = function (req, res) {
             if (err) {
                 return res.status(409).send(err).end();
             }
-            console.log(user);
             return res.status(200).send('Your account has been activated, please login.')
         });
     });
@@ -256,12 +254,14 @@ exports.resendActivationEmail = function (req, res) {
             message: 'Email parameter is required.'
         });
     }
-
     User.findOne({
         email: req.body.email
     }, function (err, user) {
         if (err) {
             return next(err);
+        }
+        if (user.confirmed) {
+            return res.send('account already activated').end();
         }
         var options = {
             auth: {

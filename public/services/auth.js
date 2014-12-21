@@ -77,6 +77,28 @@ angular.module('bpApp')
               });
             });
       },
+      resend: function (email) {
+        return $http.post('/api/resend', email)
+            .success(function (data) {
+              $location.path('/login');
+              $alert({
+                title: 'Email Sent',
+                content: 'Please check your email for instructions',
+                animation: 'fadeZoomFadeDown',
+                type: 'material',
+                duration: 5
+              });
+            })
+            .error(function (response) {
+              $alert({
+                title: 'Error!',
+                content: response,
+                animation: 'fadeZoomFadeDown',
+                type: 'material',
+                duration: 3
+              });
+            });
+      },
       addUser: function(user) {
         return $http.post('/api/add_user', user)
           .success(function() {

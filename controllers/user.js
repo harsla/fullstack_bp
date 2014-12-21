@@ -18,7 +18,8 @@ exports.addUser = function (req, res) {
     var user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        confirmed: true
     });
 
     user.save(function (err) {

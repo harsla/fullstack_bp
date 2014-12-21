@@ -19,6 +19,10 @@ angular.module('bpApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mg
                 templateUrl: 'views/forgot.html',
                 controller: 'ForgotCtrl'
             })
+            .when('/resend/:email', {
+                templateUrl: 'views/Login.html',
+                controller: 'ResendCtrl'
+            })
             .when('/reset/:token', {
                 templateUrl: 'views/reset.html',
                 controller: 'ResetCtrl'
