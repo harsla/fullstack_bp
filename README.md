@@ -33,7 +33,6 @@ module.exports = {
 -------------------------------------------
 
 TODO:
-* ACL Groups & Roles
 * User Profile
   - Change password
   - Edit name
@@ -51,3 +50,4 @@ BLING:
   * Paging
   * Account security (repeat lockout, ip record, etc)
   * Refactor angular directory structure to group like components. (ie /home should include homeController.js & homeView.html, etc)
+  * Better ACL

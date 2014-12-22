@@ -10,11 +10,11 @@ var userSchema = new mongoose.Schema({
   locked: {type: Boolean, default: false},
   emailConfirmationToken: String,
   emailConfirmationDate: Date,
-  confirmed: {type: Boolean, default: false}
+  confirmed: {type: Boolean, default: false},
+  groups: {type: Array, default: ['user']}
 });
 
 userSchema.pre('save', function(next) {
-  'use strict';
   var user = this;
   if (!user.isModified('password')) return next();
   bcrypt.genSalt(12, function(err, salt) {
@@ -32,7 +32,6 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods.comparePassword = function(candidatePassword, cb) {
-  'use strict';
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
       return cb(err);

@@ -21,6 +21,7 @@
     "nodemailer": "^1.3.0",
     "nodemailer-sendgrid-transport": "^0.1.0",
     "path": "^0.4.9",
-    "url": "^0.10.1"
+    "url": "^0.10.1",
+    "lodash-node": "^2.4.1"
   }
 }

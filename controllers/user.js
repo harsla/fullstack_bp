@@ -66,14 +66,12 @@ exports.postEditUser = function (req, res) {
         if (doc) {
             doc.name = req.body.name;
             doc.email = req.body.email;
+            doc.locked = req.body.locked;
 
             if (req.body.password) {
                 doc.password = req.body.password;
             }
 
-            if (req.body.locked) {
-                doc.locked = req.body.locked;
-            }
             doc.save(function (err) {
                 if (err) {
                     return res.status(409).send(err).end();
@@ -137,9 +135,11 @@ exports.checkEmailActivated = function (req, res, next) {
         if (err) {
             return next(err);
         }
+        if (!user) {
+            return;
+        }
         res.send({
-            activated: user.confirmed,
-            sent: user.emailConfirmationDate
+            activated: user.confirmed
         });
     });
 };
