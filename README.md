@@ -33,15 +33,12 @@ module.exports = {
 -------------------------------------------
 
 TODO:
-* User Profile
-  - Change password
-  - Edit name
-  - Change email
-  - Account Picture
+
 * Accounts originating from a strange IP should need to verify by entering a time sensitive token
 delivered via email.
 * All Administrators and superusers must provide a google authenticator key to elevate into the role.
 * Tests
+* Security around edit user
 
 BLING:
   * User panel directives (animate delete and add)
@@ -51,3 +48,4 @@ BLING:
   * Account security (repeat lockout, ip record, etc)
   * Refactor angular directory structure to group like components. (ie /home should include homeController.js & homeView.html, etc)
   * Better ACL
+  * Account Picture
