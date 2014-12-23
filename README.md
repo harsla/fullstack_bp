@@ -33,7 +33,8 @@ module.exports = {
 -------------------------------------------
 
 TODO:
-
+* Edit groups
+* Manage route / group association. Consider groups vs roles.
 * Accounts originating from a strange IP should need to verify by entering a time sensitive token
 delivered via email.
 * All Administrators and superusers must provide a google authenticator key to elevate into the role.
