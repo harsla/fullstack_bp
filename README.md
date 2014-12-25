@@ -43,7 +43,6 @@ delivered via email.
 
 BLING:
   * User panel directives (animate delete and add)
-  * Confirm dialog when removing user
   * List view for users
   * Paging
   * Account security (repeat lockout, ip record, etc)

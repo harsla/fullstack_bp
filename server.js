@@ -40,7 +40,7 @@ app.post('/api/edit_user', jwauth, userController.postEditUser);
 app.get('/api/users', userController.checkEmailAvailable);
 app.get('/api/check_activated', userController.checkEmailActivated);
 app.get('/api/account', jwauth, acl, userController.getAccount);
-app.get('/api/manage', jwauth, userController.getUsers);
+app.get('/api/manage', jwauth, acl, userController.getUsers);
 app.get('/api/edit_user', jwauth, userController.getEditUser);
 
 
