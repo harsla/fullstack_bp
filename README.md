@@ -30,6 +30,8 @@ module.exports = {
   };
 ```
 
+Once the config/secrets.js file is created run `npm install` in the project directory and then make sure you have the mongo server running (in terminal run `mongod`). Finally run `node server.js` to fire up the server and navigate to `http://localhost:1337`  
+
 -------------------------------------------
 
 TODO:
