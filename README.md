@@ -21,11 +21,11 @@ example
 ```javascript
 module.exports = {
 
-  db: process.env.MONGODB || 'mongodb://localhost/## YOUR_DATABASE_NAME ##',
-  jwt: process.env.JWT || 'SUPERSECUREJWTSEED',
-  smtpuser: process.env.SMTPUSER || 'SENDGRID_USERNAME',
-  smtppassword: process.env.SMTPPASSWORD || 'SENDGRID_PASSWORD',
-  company: process.env.COMPANY || 'YOURCOMPANYNAME'
+  db: process.env.MONGODB || 'mongodb://localhost/## YOUR_DATABASE_NAME ##', // your mongodb connection string
+  jwt: process.env.JWT || 'SUPERSECUREJWTSEED', // a unique string to use as an encryption seed
+  smtpuser: process.env.SMTPUSER || 'SENDGRID_USERNAME', // SMTP settings are provided when you sign up
+  smtppassword: process.env.SMTPPASSWORD || 'SENDGRID_PASSWORD', // for a free sendgrid account (https://sendgrid.com/)
+  company: process.env.COMPANY || 'YOURCOMPANYNAME' // This can be any string, it is used for the mail templates)
 
   };
 ```
